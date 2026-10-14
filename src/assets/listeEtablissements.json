@@ -1,0 +1,137 @@
+[
+  {
+    "nom": "Université de Franche-Comté - Site de Montbéliard",
+    "type": "IUT / Université",
+    "commune": "Montbéliard",
+    "codePostal": "25200",
+    "lat": 47.5118,
+    "lon": 6.8021,
+    "description": "Campus des Portes du Jura - Département MMI & Informatique"
+  },
+  {
+    "nom": "Université de Franche-Comté - Campus de la Bouloie",
+    "type": "Université",
+    "commune": "Besançon",
+    "codePostal": "25000",
+    "lat": 47.2482,
+    "lon": 5.9904,
+    "description": "UFR Sciences et Techniques, IUT de Besançon"
+  },
+  {
+    "nom": "Université de Franche-Comté - Centre-ville (Mégevand)",
+    "type": "Université",
+    "commune": "Besançon",
+    "codePostal": "25000",
+    "lat": 47.2348,
+    "lon": 6.0239,
+    "description": "UFR Sciences Humaines et Sociales"
+  },
+  {
+    "nom": "Université de Franche-Comté - Site de Belfort",
+    "type": "IUT",
+    "commune": "Belfort",
+    "codePostal": "90000",
+    "lat": 47.6418,
+    "lon": 6.8488,
+    "description": "IUT de Belfort-Montbéliard"
+  },
+  {
+    "nom": "Université de Franche-Comté - Site de Vesoul",
+    "type": "IUT",
+    "commune": "Vesoul",
+    "codePostal": "70000",
+    "lat": 47.6322,
+    "lon": 6.1558,
+    "description": "IUT de Vesoul"
+  },
+  {
+    "nom": "Université de Bourgogne - Campus Montmuzard",
+    "type": "Université",
+    "commune": "Dijon",
+    "codePostal": "21000",
+    "lat": 47.3142,
+    "lon": 5.0712,
+    "description": "Campus universitaire principal de Dijon"
+  },
+  {
+    "nom": "Université de Strasbourg",
+    "type": "Université",
+    "commune": "Strasbourg",
+    "codePostal": "67000",
+    "lat": 48.5801,
+    "lon": 7.7654,
+    "description": "Campus central de l'Université de Strasbourg"
+  },
+  {
+    "nom": "Université de Lorraine - Campus Lettres",
+    "type": "Université",
+    "commune": "Nancy",
+    "codePostal": "54000",
+    "lat": 48.6946,
+    "lon": 6.1738,
+    "description": "Campus Lettres et Sciences Humaines"
+  },
+  {
+    "nom": "Sorbonne Université - Campus Pierre et Marie Curie",
+    "type": "Université",
+    "commune": "Paris",
+    "codePostal": "75005",
+    "lat": 48.8471,
+    "lon": 2.3575,
+    "description": "Campus de Jussieu - Sciences et Ingénierie"
+  },
+  {
+    "nom": "Université Claude Bernard Lyon 1 - La Doua",
+    "type": "Université",
+    "commune": "Villeurbanne",
+    "codePostal": "69100",
+    "lat": 45.7827,
+    "lon": 4.8656,
+    "description": "Domaine scientifique de la Doua"
+  },
+  {
+    "nom": "Aix-Marseille Université - Campus Saint-Charles",
+    "type": "Université",
+    "commune": "Marseille",
+    "codePostal": "13003",
+    "lat": 43.3051,
+    "lon": 5.3804,
+    "description": "Site historique d'Aix-Marseille Université"
+  },
+  {
+    "nom": "Université de Bordeaux - Campus Talence Peixotto",
+    "type": "Université",
+    "commune": "Talence",
+    "codePostal": "33400",
+    "lat": 44.8072,
+    "lon": -0.5966,
+    "description": "Campus Sciences et Technologies de Bordeaux"
+  },
+  {
+    "nom": "Université de Lille - Cité Scientifique",
+    "type": "Université",
+    "commune": "Villeneuve-d'Ascq",
+    "codePostal": "59650",
+    "lat": 50.6094,
+    "lon": 3.1417,
+    "description": "Campus sciences et technologies"
+  },
+  {
+    "nom": "Université Rennes 1 - Campus de Beaulieu",
+    "type": "Université",
+    "commune": "Rennes",
+    "codePostal": "35042",
+    "lat": 48.1179,
+    "lon": -1.6393,
+    "description": "Campus scientifique et technologique"
+  },
+  {
+    "nom": "Université Toulouse III - Paul Sabatier",
+    "type": "Université",
+    "commune": "Toulouse",
+    "codePostal": "31400",
+    "lat": 43.5614,
+    "lon": 1.4678,
+    "description": "Pôle Sciences, Technologies et Santé"
+  }
+]

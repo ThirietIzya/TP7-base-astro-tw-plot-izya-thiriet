@@ -1,0 +1,98 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PlotFigure from "../../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+import departements from "../../assets/departements.geojson.json";
+import populationMain from "../../assets/populationMain.json";
+
+let selectedYear = 2015;
+let selectedSex = "Total";
+let selectedAge = "Total";
+
+const optionPlot = {
+  projection: {
+    type: "mercator", // utiliser une projection adaptée
+    domain: departements, // Domain pour centrer la carte sur la France
+  },
+  color: {
+    type: "quantile",
+    n: 8,
+    scheme: "Greens",
+    label: "Population en centaine de milliers",
+    legend: true,
+    transform: (d: number) => Math.round(d / 100000),
+  },
+  marks: [
+    Plot.geo(departements, {
+      fill: (d: any) => {
+        const deptName = d.properties.nom; // Nom du département dans le geoJson
+        const popData = populationMain.find(
+          (p: any) =>
+            p.Géographie === deptName &&
+            p.Période === selectedYear &&
+            p.Sexe === selectedSex &&
+            p["Âge"] === selectedAge
+        ); // trouver les données correspondantes
+        return popData ? popData.Valeur : 0; // Coloriser en fonction de la valeur
+      },
+      stroke: "#999",
+      title: (d: any) => {
+        const deptName = d.properties.nom; // Nom du département dans le geoJson
+        const popData = populationMain.find(
+          (p: any) =>
+            p.Géographie === deptName &&
+            p.Période === selectedYear &&
+            p.Sexe === selectedSex &&
+            p["Âge"] === selectedAge
+        ); // trouver les données correspondantes
+        return `${deptName} : ${popData ? popData.Valeur.toLocaleString('fr-FR') : 'N/A'}`; // Coloriser en fonction de la valeur
+      },
+      tip: true,
+    }),
+  ],
+};
+---
+
+<Layout title="2.1) GeoJSON Serveur - Observable Plot" activeTab="geojson-serveur">
+  <div class="space-y-6">
+    <!-- En-tête -->
+    <div class="text-center space-y-2">
+      <span class="inline-block px-3 py-1 bg-pink-100 text-pink-800 border border-pink-300 rounded-full text-xs font-bold uppercase tracking-wider">
+        Étape 2.1 : Rendu côté serveur (SSR)
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+        Carte GeoJSON : <span class="text-pink-600">Côté Serveur</span>
+      </h1>
+      <p class="text-slate-600 max-w-2xl mx-auto text-sm sm:text-base">
+        Rendu statique de la carte choroplèthe de la population française (2015, Total, Total) avec <code>Plot.geo()</code> et JSDOM.
+      </p>
+    </div>
+
+    <!-- Navigation GeoJSON -->
+    <div class="flex justify-center gap-3">
+      <a href="/geojson/serveur" class="px-4 py-2 rounded-full text-xs font-bold bg-pink-600 text-white shadow-xs">
+        1. Rendu Côté Serveur
+      </a>
+      <a href="/geojson/client" class="px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-pink-200 hover:bg-pink-50">
+        2. Rendu Côté Client avec Sélecteurs →
+      </a>
+    </div>
+
+    <!-- Carte du Graphique -->
+    <section class="rounded-3xl border-2 border-pink-200 bg-white/95 p-6 sm:p-8 shadow-sm flex flex-col items-center">
+      <div class="w-full flex items-center justify-between pb-3 mb-4 border-b border-pink-100">
+        <div>
+          <h2 class="text-lg font-black text-slate-900">Carte Choroplèthe de la France</h2>
+          <p class="text-xs text-slate-500">Paramètres fixés côté serveur : Année {selectedYear} | Sexe {selectedSex} | Âge {selectedAge}</p>
+        </div>
+        <span class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-bold border border-emerald-200">
+          Généré au build (SSR)
+        </span>
+      </div>
+
+      <div class="flex justify-center items-center overflow-x-auto w-full">
+        <PlotFigure options={optionPlot} />
+      </div>
+    </section>
+  </div>
+</Layout>

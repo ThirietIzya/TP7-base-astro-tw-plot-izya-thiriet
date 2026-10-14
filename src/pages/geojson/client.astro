@@ -1,0 +1,191 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import populationMain from "../../assets/populationMain.json";
+
+// Extraction dynamique des options uniques pour les 3 sélecteurs
+const listePeriode = [
+  ...new Set(populationMain?.map((d) => d.Période)),
+].sort((a, b) => b - a);
+
+const listeSex = [
+  ...new Set(populationMain?.map((d) => d.Sexe)),
+];
+
+const listeAge = [
+  ...new Set(populationMain?.map((d) => d["Âge"])),
+];
+---
+
+<Layout title="2.2) GeoJSON Client - Observable Plot" activeTab="geojson-client">
+  <div class="space-y-6">
+    <!-- En-tête -->
+    <div class="text-center space-y-2">
+      <span class="inline-block px-3 py-1 bg-pink-100 text-pink-800 border border-pink-300 rounded-full text-xs font-bold uppercase tracking-wider">
+        Étape 2.2 : Rendu interactif côté client
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+        Carte GeoJSON : <span class="text-pink-600">Filtres Côté Client</span>
+      </h1>
+      <p class="text-slate-600 max-w-2xl mx-auto text-sm sm:text-base">
+        Adaptation du graphique Observable Plot côté client avec mise à jour réactive au changement des menus déroulants (Année, Sexe, Âge).
+      </p>
+    </div>
+
+    <!-- Navigation GeoJSON -->
+    <div class="flex justify-center gap-3">
+      <a href="/geojson/serveur" class="px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-700 border border-pink-200 hover:bg-pink-50">
+        ← 1. Rendu Côté Serveur
+      </a>
+      <a href="/geojson/client" class="px-4 py-2 rounded-full text-xs font-bold bg-pink-600 text-white shadow-xs">
+        2. Rendu Côté Client avec Sélecteurs
+      </a>
+    </div>
+
+    <!-- Filtres SELECT -->
+    <div class="max-w-3xl mx-auto bg-white/95 backdrop-blur-sm border-2 border-pink-200 rounded-3xl p-5 shadow-sm">
+      <h3 class="text-sm font-extrabold text-slate-800 mb-3 flex items-center gap-2">
+        <span>⚙️</span> Paramètres d'affichage de la population :
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Sélecteur Année / Période -->
+        <div>
+          <label for="periode" class="block text-xs font-bold text-slate-600 mb-1">
+            📅 Période (Année)
+          </label>
+          <select
+            id="periode"
+            name="periode"
+            class="w-full px-3 py-2 text-sm font-semibold rounded-xl border border-pink-300 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500 cursor-pointer shadow-2xs"
+          >
+            {listePeriode.map((p, i) => (
+              <option value={p} selected={i === 0}>{p}</option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Sélecteur Sexe -->
+        <div>
+          <label for="sexe" class="block text-xs font-bold text-slate-600 mb-1">
+            👥 Sexe
+          </label>
+          <select
+            id="sexe"
+            name="sexe"
+            class="w-full px-3 py-2 text-sm font-semibold rounded-xl border border-pink-300 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500 cursor-pointer shadow-2xs"
+          >
+            {listeSex.map((s, i) => (
+              <option value={s} selected={i === 0}>{s}</option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Sélecteur Âge -->
+        <div>
+          <label for="age" class="block text-xs font-bold text-slate-600 mb-1">
+            🎂 Tranche d'âge
+          </label>
+          <select
+            id="age"
+            name="age"
+            class="w-full px-3 py-2 text-sm font-semibold rounded-xl border border-pink-300 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500 cursor-pointer shadow-2xs"
+          >
+            {listeAge.map((a, i) => (
+              <option value={a} selected={i === 0}>{a}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteneur pour le graphique client Observable Plot -->
+    <section class="rounded-3xl border-2 border-pink-200 bg-white/95 p-6 sm:p-8 shadow-sm flex flex-col items-center">
+      <div id="plot-map" class="flex justify-center items-center overflow-x-auto w-full min-h-[550px]"></div>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import departements from "../../assets/departements.geojson.json";
+  import populationMain from "../../assets/populationMain.json";
+
+  // Récupération des éléments SELECT côté client
+  const elmYear = document.getElementById("periode") as HTMLSelectElement;
+  const elmSex = document.getElementById("sexe") as HTMLSelectElement;
+  const elmAge = document.getElementById("age") as HTMLSelectElement;
+  const container = document.getElementById("plot-map");
+
+  function renderMap() {
+    if (!container) return;
+
+    // Valeurs sélectionnées
+    const selectedYear = Number(elmYear?.value || 2015);
+    const selectedSex = elmSex?.value || "Total";
+    const selectedAge = elmAge?.value || "Total";
+
+    // Configuration des options Plot
+    const optionPlot = {
+      title: `Population départementale (${selectedYear})`,
+      subtitle: `Filtres : Sexe = ${selectedSex} | Tranche d'âge = ${selectedAge}`,
+      caption: "Source : Insee / GeoJSON départements français métropolitains.",
+      ariaLabel: `Carte choroplèthe de la population en France pour l'année ${selectedYear}`,
+      width: 760,
+      height: 600,
+      projection: {
+        type: "mercator", // projection adaptée
+        domain: departements, // Domaine pour centrer sur la France
+      },
+      color: {
+        type: "quantile",
+        n: 8,
+        scheme: "Greens",
+        label: "Population (en centaine de milliers)",
+        legend: true,
+        transform: (d: number) => Math.round(d / 100000),
+      },
+      marks: [
+        Plot.geo(departements, {
+          fill: (d: any) => {
+            const deptName = d.properties.nom; // Nom du département dans le geoJson
+            const popData = (populationMain as any[]).find(
+              (p) =>
+                p.Géographie === deptName &&
+                Number(p.Période) === selectedYear &&
+                p.Sexe === selectedSex &&
+                p["Âge"] === selectedAge
+            );
+            return popData ? popData.Valeur : 0;
+          },
+          stroke: "#999",
+          strokeWidth: 0.8,
+          title: (d: any) => {
+            const deptName = d.properties.nom;
+            const popData = (populationMain as any[]).find(
+              (p) =>
+                p.Géographie === deptName &&
+                Number(p.Période) === selectedYear &&
+                p.Sexe === selectedSex &&
+                p["Âge"] === selectedAge
+            );
+            return `${deptName} : ${popData ? popData.Valeur.toLocaleString("fr-FR") : "N/A"}`;
+          },
+          tip: true,
+        }),
+      ],
+    };
+
+    // Génération et insertion du graphique côté client
+    const plot = Plot.plot(optionPlot);
+    container.innerHTML = "";
+    container.append(plot);
+  }
+
+  // Écouteurs d'événements change sur les sélecteurs
+  elmYear?.addEventListener("change", renderMap);
+  elmSex?.addEventListener("change", renderMap);
+  elmAge?.addEventListener("change", renderMap);
+
+  // Premier rendu
+  renderMap();
+</script>
+

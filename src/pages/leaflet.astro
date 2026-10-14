@@ -1,0 +1,133 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "leaflet/dist/leaflet.css";
+import listeEtablissements from "../assets/listeEtablissements.json";
+
+const nbEtablissements = listeEtablissements.length;
+const villes = [...new Set(listeEtablissements.map((e) => e.commune))];
+---
+
+<Layout title="1) Carte Leaflet - Établissements" activeTab="leaflet">
+  <div class="space-y-6">
+    <!-- En-tête -->
+    <div class="text-center space-y-2">
+      <span class="inline-block px-3 py-1 bg-pink-100 text-pink-800 border border-pink-300 rounded-full text-xs font-bold uppercase tracking-wider">
+        Étape 1 du TP : Cartographie interactive Leaflet.js
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+        Carte Leaflet : <span class="text-pink-600">Liste des Établissements</span>
+      </h1>
+      <p class="text-slate-600 max-w-2xl mx-auto text-sm sm:text-base">
+        Affichage cartographique centré sur la France avec tuiles OpenStreetMap et marqueurs interactifs avec popups d'information.
+      </p>
+    </div>
+
+    <!-- Statistiques rapides -->
+    <div class="flex flex-wrap justify-center gap-3">
+      <div class="bg-white/90 border border-pink-200 rounded-2xl px-4 py-2 shadow-xs text-xs font-bold text-slate-700">
+        🏫 <span class="text-pink-600 font-extrabold">{nbEtablissements}</span> établissements cartographiés
+      </div>
+      <div class="bg-white/90 border border-pink-200 rounded-2xl px-4 py-2 shadow-xs text-xs font-bold text-slate-700">
+        📍 <span class="text-pink-600 font-extrabold">{villes.length}</span> agglomérations
+      </div>
+    </div>
+
+    <!-- Conteneur de la carte Leaflet -->
+    <section class="rounded-3xl border-2 border-pink-200 bg-white/95 p-4 sm:p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-4 pb-2 border-b border-pink-100">
+        <h2 class="text-lg font-black text-slate-900">Carte interactive</h2>
+        <span class="text-xs text-slate-500 bg-pink-50 px-2 py-1 rounded-full border border-pink-200">
+          OpenStreetMap & Leaflet
+        </span>
+      </div>
+
+      <div id="map" class="w-full h-[550px] sm:h-[620px] rounded-2xl border border-pink-200 shadow-inner z-10"></div>
+    </section>
+
+    <!-- Tableau récapitulatif -->
+    <section class="rounded-3xl border-2 border-pink-200 bg-white/95 p-6 shadow-sm">
+      <h3 class="text-lg font-black text-slate-900 mb-4">Données chargées ({nbEtablissements})</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead>
+            <tr class="border-b border-pink-200 text-pink-900 font-black">
+              <th class="py-2 px-3">Établissement</th>
+              <th class="py-2 px-3">Type</th>
+              <th class="py-2 px-3">Commune</th>
+              <th class="py-2 px-3">Coordonnées</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-pink-100 text-slate-700">
+            {
+              listeEtablissements.map((etab) => (
+                <tr class="hover:bg-pink-50/50">
+                  <td class="py-2 px-3 font-semibold text-slate-900">{etab.nom}</td>
+                  <td class="py-2 px-3"><span class="bg-pink-100 text-pink-800 px-2 py-0.5 rounded-full font-bold text-xs">{etab.type}</span></td>
+                  <td class="py-2 px-3">{etab.commune} ({etab.codePostal})</td>
+                  <td class="py-2 px-3 font-mono text-xs text-slate-500">{etab.lat.toFixed(4)}, {etab.lon.toFixed(4)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  // Import de la liste des établissements JSON
+  import listeEtablissements from "../assets/listeEtablissements.json";
+  // Import de la bibliothèque Leaflet pour créer la carte interactive
+  import L from "leaflet";
+
+  // Dans l'élément d'ID "map" : création de la carte centrée sur la France (lat: 46.6033, lon: 1.883) avec un zoom niveau 6
+  const map = L.map("map").setView([46.6033, 1.883], 6);
+
+  // Ajout du fond de carte OpenStreetMap
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  // Correction icônes Leaflet avec bundlers (Vite/Webpack)
+  const defaultIcon = L.icon({
+    iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
+  // Tableau pour ajuster la vue aux marqueurs
+  const markersGroup: L.Marker[] = [];
+
+  // Ajout des marqueurs pour chaque établissement
+  listeEtablissements.forEach((etab) => {
+    if (typeof etab.lat === "number" && typeof etab.lon === "number") {
+      const popupHtml = `
+        <div style="font-family: inherit; font-size: 13px;">
+          <h4 style="margin: 0 0 4px 0; font-weight: bold; color: #db2777;">${etab.nom}</h4>
+          <p style="margin: 0 0 4px 0; color: #475569;"><strong>Commune :</strong> ${etab.commune} (${etab.codePostal})</p>
+          <p style="margin: 0 0 4px 0; color: #475569;"><strong>Type :</strong> ${etab.type}</p>
+          <p style="margin: 0; font-size: 11px; color: #64748b;">${etab.description || ""}</p>
+        </div>
+      `;
+
+      const marker = L.marker([etab.lat, etab.lon], { icon: defaultIcon })
+        .addTo(map)
+        .bindPopup(popupHtml);
+
+      markersGroup.push(marker);
+    }
+  });
+
+  // Ajustement automatique de la vue si des marqueurs existent
+  if (markersGroup.length > 0) {
+    const group = L.featureGroup(markersGroup);
+    map.fitBounds(group.getBounds().pad(0.1));
+  }
+</script>
+

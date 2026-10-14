@@ -70,6 +70,35 @@ const penguinsChartOptions = {
       </figure>
     </section>
 
+    <!-- Liens directs vers les nouveaux exercices du TP -->
+    <section class="rounded-3xl border-2 border-pink-200 bg-white/95 p-6 sm:p-8 shadow-sm space-y-4">
+      <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+        <span>🚀</span> Nouveaux exercices du TP :
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- 0) a11y -->
+        <a href="/accessibilite" class="block p-4 rounded-2xl border-2 border-pink-100 hover:border-pink-300 hover:bg-pink-50/50 transition-all shadow-xs group">
+          <div class="text-xs font-bold uppercase text-emerald-700 bg-emerald-100/70 inline-block px-2 py-0.5 rounded-full mb-2">0) a11y</div>
+          <h3 class="font-extrabold text-slate-900 group-hover:text-pink-600">Accessibilité (a11y)</h3>
+          <p class="text-xs text-slate-500 mt-1">Figure, figcaption, aria-label, audits Lighthouse et arborescence d'accessibilité.</p>
+        </a>
+
+        <!-- 1) Leaflet -->
+        <a href="/leaflet" class="block p-4 rounded-2xl border-2 border-pink-100 hover:border-pink-300 hover:bg-pink-50/50 transition-all shadow-xs group">
+          <div class="text-xs font-bold uppercase text-pink-700 bg-pink-100 inline-block px-2 py-0.5 rounded-full mb-2">1) Leaflet.js</div>
+          <h3 class="font-extrabold text-slate-900 group-hover:text-pink-600">Carte Établissements</h3>
+          <p class="text-xs text-slate-500 mt-1">Carte interactive OpenStreetMap centrée sur la France avec marqueurs et popups.</p>
+        </a>
+
+        <!-- 2) GeoJSON -->
+        <a href="/geojson/client" class="block p-4 rounded-2xl border-2 border-pink-100 hover:border-pink-300 hover:bg-pink-50/50 transition-all shadow-xs group">
+          <div class="text-xs font-bold uppercase text-indigo-700 bg-indigo-100/70 inline-block px-2 py-0.5 rounded-full mb-2">2) Astro GeoJSON</div>
+          <h3 class="font-extrabold text-slate-900 group-hover:text-pink-600">Carte Choroplèthe Dynamique</h3>
+          <p class="text-xs text-slate-500 mt-1">Filtres SELECT côté client (Année, Sexe, Âge) et rendu serveur SSR.</p>
+        </a>
+      </div>
+    </section>
+
     <!-- Navigation entre les 4 graphiques -->
     <div class="text-center space-y-2">
       <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Voir les autres graphiques :</span>
